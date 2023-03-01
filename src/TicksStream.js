@@ -28,9 +28,11 @@ class TickStream {
 
     setticksRequestBody(body) {
         this.ticksRequestBody = body;
+        console.log(this.ticksRequestBody)
     }
 
     subscribeTicks = async () => {
+        console.log(this.ticksRequestBody)
         connection.addEventListener("message", this.ticksResponse);
         await this.ticksSubscriber();
     };
