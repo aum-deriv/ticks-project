@@ -17,7 +17,7 @@ const activeSymbolsResponse = async (res) => {
     
     // Error Handling
     if(data.error !== undefined) {
-        console.log("getActiveSymbol Error : ", data.error?.message);
+        console.log("Error : ", data.error?.message);
 
         // remove listener for data from websocket.
         connection.removeEventListener("message", activeSymbolsResponse, false);
