@@ -20,14 +20,17 @@ const ActiveSymbolsDropDown = () => {
     const [activeSymbolsData, setactiveSymbolsData] = useState([]);
     const [dataLoaded, setdataLoaded] = useState(false);
 
-
+    let subInterval;
     useEffect(() => {
-        console.log(dataLoaded);
         if(selectedSymbol) {
             TicksStream.setticksRequestBody({ "ticks": selectedSymbol });
             console.log(typeof selectedSymbol)
-            TicksStream.subscribeTicks();
-            setTimeout(TicksStream.unsubscribeTicks, 10000);
+            subInterval = setInterval(() => {
+                TicksStream.subscribeTicks(); 
+            }, 1000);
+            setInterval(() => {
+                TicksStream.unsubscribeTicks();
+            }, 2000);
         }
     }, [selectedSymbol])
 
@@ -76,6 +79,7 @@ const ActiveSymbolsDropDown = () => {
                 className="active-symbols-dropdown"
                 onChange={(e) => {
                     setselectedSymbol(e.target.value);
+                    TicksStream.settickStreamData([]);
                 }}
                 value={selectedSymbol}
             >
@@ -84,7 +88,7 @@ const ActiveSymbolsDropDown = () => {
                         return (
                             <option
                                 key={i}
-                                value={JSON.stringify(el.symbol)}
+                                value={el.symbol}
                             >
                                 {el.display_name}
                             </option>

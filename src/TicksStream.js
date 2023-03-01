@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, toJS } from 'mobx';
 import DerivAPIBasic from "https://cdn.skypack.dev/@deriv/deriv-api/dist/DerivAPIBasic";
 
 
@@ -27,12 +27,12 @@ class TickStream {
     }
 
     setticksRequestBody(body) {
-        this.ticksRequestBody = body;
-        console.log(this.ticksRequestBody)
+        this.ticksRequestBody = (body);
+        this.ticksRequestBody = toJS(this.ticksRequestBody);
+        console.log(toJS(this.ticksRequestBody))
     }
 
     subscribeTicks = async () => {
-        console.log(this.ticksRequestBody)
         connection.addEventListener("message", this.ticksResponse);
         await this.ticksSubscriber();
     };

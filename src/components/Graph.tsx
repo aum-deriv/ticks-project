@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
+import { LineChart, Line, XAxis, YAxis } from 'recharts';
+
 
 import TicksStream from '../TicksStream.js';
 import ActiveSymbolsDropDown from './ActiveSymbolsDropDown.js';
@@ -17,9 +19,20 @@ const Graph = observer(() => {
     // else
         return (
             <div className='graph-wrapper'>
-                graph-wrapper
-                {JSON.stringify(TicksStream.tickStreamData)}
-                <ActiveSymbolsDropDown></ActiveSymbolsDropDown>
+                {/* {JSON.stringify(TicksStream.tickStreamData)} */}
+
+                <LineChart width={800} height={800} data={TicksStream.tickStreamData}
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
+                >
+                    <YAxis dataKey="ask" />
+                    <XAxis dataKey="epoch" />
+                    <Line dataKey="ask" type="monotone" stroke="#000000"></Line>
+                </LineChart>
             </div>
         );
 }
