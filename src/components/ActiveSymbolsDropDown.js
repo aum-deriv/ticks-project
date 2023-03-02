@@ -25,12 +25,12 @@ const ActiveSymbolsDropDown = () => {
         if(selectedSymbol) {
             TicksStream.setticksRequestBody({ "ticks": selectedSymbol });
             console.log(typeof selectedSymbol)
-            subInterval = setInterval(() => {
-                TicksStream.subscribeTicks(); 
-            }, 1000);
-            setInterval(() => {
-                TicksStream.unsubscribeTicks();
-            }, 2000);
+            // // subInterval = setInterval(() => {
+            TicksStream.subscribeTicks(); 
+            // // }, 1000);
+            // setInterval(() => {
+            //     TicksStream.unsubscribeTicks();
+            // }, 10000);
         }
     }, [selectedSymbol])
 
