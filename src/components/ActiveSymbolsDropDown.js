@@ -3,6 +3,8 @@ import { makeAutoObservable } from 'mobx';
 import DerivAPIBasic from "https://cdn.skypack.dev/@deriv/deriv-api/dist/DerivAPIBasic";
 import TicksStream from '../TicksStream';
 
+import { graphScale } from './Graph';
+
 const app_id = 1089;
 const connection = new WebSocket(
     `wss://ws.binaryws.com/websockets/v3?app_id=${app_id}`
@@ -22,6 +24,7 @@ const ActiveSymbolsDropDown = () => {
 
     let subInterval;
     useEffect(() => {
+        graphScale.resetScale();
         if(selectedSymbol) {
             TicksStream.setticksRequestBody({ "ticks": selectedSymbol });
             console.log(typeof selectedSymbol)

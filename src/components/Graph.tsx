@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 
 import { Line } from 'react-chartjs-2';
@@ -17,6 +17,7 @@ import {
 import TicksStream from '../TicksStream.js';
 import ActiveSymbolsDropDown from './ActiveSymbolsDropDown.js';
 import { Ticks } from 'chart.js/dist/index.js';
+import { makeAutoObservable } from 'mobx';
 
 
 ChartJS.register(
@@ -27,44 +28,90 @@ ChartJS.register(
     Title,
     Tooltip,
     Legend
-  );
+);
   
-const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'Chart.js Line Chart',
-      },
-    },
-    scales: {
-      x: {
-          display: true,
-          title: "epochs",
-          min: 0,
-          max: 2,
-      }, 
-      y: {},
-    },
 
-  };
-
-
+class GraphScale {
+  scale: {min: number, max: number} = {min: 0, max: 10};
+  constructor() {
+    makeAutoObservable(this);
+  }
+  setscale(s: {min: number, max: number}) {
+    this.scale = s;
+  }
+  resetScale() {
+    this.scale = {min: 0, max: 10}
+  }
+};
 
 const Graph = observer(() => {
 
-  const handleScroll = (event) => {
-    console.log(event.deltaY)
+  // const [scale, setscale] = useState({min: 0, max: 5});
+  let throttle = true;
+  let isAtEnd = true;
 
-    if(event.deltaY > 0) {
+  function debounce(event) {
+    // let waiting = false;
+    // return function () {
+    //   if (waiting) {
+    //     return;
+    //   }
+  
+    //   waiting = true;
+    //   setTimeout(() => {
+    //     func.apply(this);
+    //     waiting = false;
+    //   }, wait);
+    // };
+    if(throttle) {
+      throttle = false;
+      console.log("Throttle", throttle);
+      handleScroll(event);
+      setTimeout(() => {
+        throttle = true;
+        console.log("Throttle", throttle);
+      }, 500);
+    }
+  }
+
+
+  useEffect(() => {
+    console.log("scale", graphScale.scale);
+    console.log("isAtEnd", isAtEnd)
+    // if(isAtEnd)
+      // handleScroll({deltaY: 1})
+    // chartRef.update();
+  }, [graphScale.scale, TicksStream.tickStreamData]);
+
+  const handleScroll = (event: any) => {
+    // console.log(event.deltaY)
+    // const optionsCopy = {};
+    let minmax;
+    let delta = 0.005
+    if(event.deltaY >= 0 && graphScale.scale.max <= TicksStream.tickStreamData.length) {
       // increament min and max
+      console.log("mORE than 0");
+      minmax = {
+        min: graphScale.scale.min + 1,
+        max: graphScale.scale.max + 1
+      }
+    //   optionsCopy.scales.x.min = Math.ceil(optionsCopy.scales.x.min + delta);
+    //   optionsCopy.scales.x.max = Math.ceil(optionsCopy.scales.x.max + delta);
     }
-    else if (event.deltaY < 0) {
+    else if (event.deltaY < 0 && graphScale.scale.min > 0) {
       // decreament min and max
+      minmax = {
+        min: graphScale.scale.min - 1,
+        max: graphScale.scale.max - 1
+      }
+
+      isAtEnd = false;
     }
+
+
+    // setgraphOptions();
+    if(minmax)
+      graphScale.setscale(minmax);
   };
 
   // useEffect(() => {
@@ -80,7 +127,9 @@ const Graph = observer(() => {
         >
             {/* {JSON.stringify(TicksStream.tickStreamData)} */}
             <Line
-                onWheel={handleScroll}
+                onWheel={
+                  debounce
+                }
                 data={{
                     labels: TicksStream.tickStreamData.map((el, id) => id),
                     datasets: [
@@ -91,10 +140,45 @@ const Graph = observer(() => {
                     },
                     ],
                 }}
-                options={options}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'top' as const,
+                    },
+                    title: {
+                      display: true,
+                      text: 'Chart.js Line Chart',
+                    },
+                  },
+                  scales: {
+                    x: {
+                        display: true,
+                        title: "epochs",
+                        min: graphScale.scale.min,
+                        max: graphScale.scale.max,
+                    }, 
+                    y: {},
+                  },
+              }}
+                // redraw={true}
             />
+                    
+                    
+          <button 
+          onClick={() => handleScroll({deltaY: -1})}
+          className='left'>
+            left
+          </button>
+          <button 
+            onClick={() => handleScroll({deltaY: 1})}
+            className='right'>
+            right
+          </button>
         </div>
+
     );
 }
 );
-export default Graph;
+let graphScale = new GraphScale();
+export {Graph, graphScale};
