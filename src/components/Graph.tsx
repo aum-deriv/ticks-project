@@ -121,9 +121,7 @@ const Graph = observer(() => {
                   debounce
                 }
                 data={{
-                    labels: [...TicksStream.tickStreamData.map((el, id) => {
-                       return new Date(el.epoch + new Date().getTimezoneOffset()).toLocaleTimeString()
-                    }), 'now'],
+                    labels: [...TicksStream.tickStreamData.map((el, id) => new Date(el.epoch * 1000).toLocaleTimeString("it-IT")), 'now'],
                     datasets: [
                     {
                         label: 'Ask Price ',
