@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { makeAutoObservable } from 'mobx';
 import DerivAPIBasic from "https://cdn.skypack.dev/@deriv/deriv-api/dist/DerivAPIBasic";
 import TicksStream from '../TicksStream';
 
@@ -20,20 +19,15 @@ const ActiveSymbolsDropDown = () => {
 
     const [selectedSymbol, setselectedSymbol] = useState('');
     const [activeSymbolsData, setactiveSymbolsData] = useState([]);
-    const [dataLoaded, setdataLoaded] = useState(false);
 
     let subInterval;
     useEffect(() => {
         graphScale.resetScale();
         if(selectedSymbol) {
             TicksStream.setticksRequestBody({ "ticks": selectedSymbol });
-            console.log(typeof selectedSymbol)
-            // // subInterval = setInterval(() => {
+            // console.log(typeof selectedSymbol)
             TicksStream.subscribeTicks(); 
-            // // }, 1000);
-            // setInterval(() => {
-            //     TicksStream.unsubscribeTicks();
-            // }, 10000);
+
         }
     }, [selectedSymbol])
 
@@ -51,12 +45,11 @@ const ActiveSymbolsDropDown = () => {
     
         // Data received successfully.
         if(data.msg_type === "active_symbols") {
-            // console.log(data.active_symbols);
-            // setdataLoader(true);
+
             setactiveSymbolsData(data.active_symbols);
             setselectedSymbol(data.active_symbols[0].symbol)
         }
-        console.log("removing listener")
+        // console.log("removing listener")
         connection.removeEventListener("message", activeSymbolsResponse, false);
     };
     
@@ -72,9 +65,9 @@ const ActiveSymbolsDropDown = () => {
     }, [])
 
 
-    useEffect(() => {
-        console.log(selectedSymbol)
-    }, [selectedSymbol]);
+    // useEffect(() => {
+    //     console.log(selectedSymbol)
+    // }, [selectedSymbol]);
 
     return (
         <div className="active-symbols-wrapper">
