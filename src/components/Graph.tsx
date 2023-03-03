@@ -32,7 +32,7 @@ ChartJS.register(
   
 
 class GraphScale {
-  scale: {min: number, max: number} = {min: 0, max: 10};
+  scale: {min: number, max: number} = {min: 0, max: 15};
   constructor() {
     makeAutoObservable(this);
   }
@@ -40,7 +40,7 @@ class GraphScale {
     this.scale = s;
   }
   resetScale() {
-    this.scale = {min: 0, max: 10}
+    this.scale = {min: 0, max: 15}
   }
 };
 
@@ -69,6 +69,7 @@ const Graph = observer(() => {
     // if(isAtEnd)
     if(graphScale.scale.max === TicksStream.tickStreamData.length - 1)
       handleScroll({deltaY: 1})
+    console.log(new Date().getTime())
     // chartRef.update();
   }, [TicksStream.tickStreamData]);
 
@@ -120,11 +121,13 @@ const Graph = observer(() => {
                   debounce
                 }
                 data={{
-                    labels: TicksStream.tickStreamData.map((el, id) => id),
+                    labels: [...TicksStream.tickStreamData.map((el, id) => {
+                       return new Date(el.epoch + new Date().getTimezoneOffset()).toLocaleTimeString()
+                    }), 'now'],
                     datasets: [
                     {
                         label: 'Ask Price ',
-                        data: TicksStream.tickStreamData.map(el => el.ask),
+                        data: [...TicksStream.tickStreamData.map(el => el.ask), null],
                         borderColor: '#00000'
                     },
                     ],
