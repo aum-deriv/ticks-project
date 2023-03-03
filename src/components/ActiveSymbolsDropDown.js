@@ -20,13 +20,13 @@ const ActiveSymbolsDropDown = () => {
     const [selectedSymbol, setselectedSymbol] = useState('');
     const [activeSymbolsData, setactiveSymbolsData] = useState([]);
 
-    let subInterval;
     useEffect(() => {
         graphScale.resetScale();
         if(selectedSymbol) {
             TicksStream.setticksRequestBody({ "ticks": selectedSymbol });
             // console.log(typeof selectedSymbol)
             TicksStream.subscribeTicks(); 
+            console.log(graphScale.scale.max);
 
         }
     }, [selectedSymbol])
