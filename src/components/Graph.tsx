@@ -51,18 +51,6 @@ const Graph = observer(() => {
   let isAtEnd = true;
 
   function debounce(event) {
-    // let waiting = false;
-    // return function () {
-    //   if (waiting) {
-    //     return;
-    //   }
-  
-    //   waiting = true;
-    //   setTimeout(() => {
-    //     func.apply(this);
-    //     waiting = false;
-    //   }, wait);
-    // };
     if(throttle) {
       throttle = false;
       console.log("Throttle", throttle);
@@ -79,9 +67,10 @@ const Graph = observer(() => {
     console.log("scale", graphScale.scale);
     console.log("isAtEnd", isAtEnd)
     // if(isAtEnd)
-      // handleScroll({deltaY: 1})
+    if(graphScale.scale.max === TicksStream.tickStreamData.length - 1)
+      handleScroll({deltaY: 1})
     // chartRef.update();
-  }, [graphScale.scale, TicksStream.tickStreamData]);
+  }, [TicksStream.tickStreamData]);
 
   const handleScroll = (event: any) => {
     // console.log(event.deltaY)
@@ -144,7 +133,7 @@ const Graph = observer(() => {
                   responsive: true,
                   plugins: {
                     legend: {
-                      position: 'top' as const,
+                      position: 'top' as const
                     },
                     title: {
                       display: true,
