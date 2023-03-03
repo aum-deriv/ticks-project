@@ -140,13 +140,15 @@ const Graph = observer(() => {
             <div className='scroll-btn-container'>
               <button 
                 onClick={() => handleScroll({deltaY: -1})}
-                className='scroll-btn'>
-                  ◀
+                className='scroll-btn'
+              >
+                  ◀ Move Left
               </button>
               <button 
                 onClick={() => handleScroll({deltaY: 1})}
-                className='scroll-btn'>
-                 ▶
+                className='scroll-btn'
+                >
+                 Move Right ▶
               </button>
             </div>
         </div>

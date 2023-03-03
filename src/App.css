@@ -22,6 +22,10 @@
 
   padding: 0.25em;
 
+  transition: all 0.2s;
+
+  cursor: pointer;
+
   border: 1px solid white;
   border-radius: 0.15em;
 
@@ -52,12 +56,17 @@
 
   padding: 10px;
 
+  transition: all 0.2s;
+
+  cursor: pointer;
+
   color: white;
   background: #1e1e1e;
   font-weight: bolder;
+  font-family: inherit;
 }
 
-.scroll-btn:hover {
+.scroll-btn:hover, .active-symbols-dropdown:hover {
   color: #1e1e1e;
   background: white;
 }
